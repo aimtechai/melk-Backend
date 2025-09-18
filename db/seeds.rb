@@ -77,3 +77,11 @@ puts "\nSeeded Users:"
 [ manager, owner, t1, t2 ].each do |u|
   puts "#{u.email} (#{u.roles.pluck(:name).join(', ')}) -> Profile: #{u.profile.first_name} #{u.profile.last_name}"
 end
+
+tenant = User.find_by(email: "tenant1@melk.pm")
+tenant.maintenance_requests.create!(
+  title: "Broken Sink",
+  description: "The kitchen sink is leaking heavily.",
+  location: "Kitchen",
+  allow_entry: true
+)

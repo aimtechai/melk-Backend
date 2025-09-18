@@ -11,6 +11,8 @@ class User < ApplicationRecord
          jwt_revocation_strategy: self
 
   has_one :profile, dependent: :destroy
+  has_many :maintenance_requests, dependent: :destroy
+
   accepts_nested_attributes_for :profile
 
   after_create :assign_default_role

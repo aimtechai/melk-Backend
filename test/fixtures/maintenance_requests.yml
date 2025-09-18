@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  title: MyString
+  description: MyText
+  location: MyString
+  status: MyString
+  allow_entry_when_not_home: false
+  assigned_to_user_id: 
+  request_code: MyString
+
+two:
+  user: two
+  title: MyString
+  description: MyText
+  location: MyString
+  status: MyString
+  allow_entry_when_not_home: false
+  assigned_to_user_id: 
+  request_code: MyString

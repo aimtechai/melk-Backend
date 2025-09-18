@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_18_183244) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_18_192110) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_18_183244) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "maintenance_requests", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title"
+    t.text "description"
+    t.string "location"
+    t.integer "status", default: 0, null: false
+    t.boolean "allow_entry", default: false, null: false
+    t.bigint "assigned_to_user_id"
+    t.string "request_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_code"], name: "index_maintenance_requests_on_request_code", unique: true
+    t.index ["status"], name: "index_maintenance_requests_on_status"
+    t.index ["user_id"], name: "index_maintenance_requests_on_user_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -91,5 +107,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_18_183244) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "maintenance_requests", "users"
+  add_foreign_key "maintenance_requests", "users", column: "assigned_to_user_id"
   add_foreign_key "profiles", "users"
 end

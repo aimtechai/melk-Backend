@@ -4,9 +4,9 @@ class Api::V1::BaseController < ApplicationController
   respond_to :json
 
   protect_from_forgery with: :null_session
-  # skip_before_action :verify_authenticity_token
-
   before_action :authenticate_user!
+
+  # skip_before_action :verify_authenticity_token
 
   rescue_from Pundit::NotAuthorizedError do
     render json: { error: "Forbidden" }, status: :forbidden
