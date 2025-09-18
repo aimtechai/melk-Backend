@@ -1,28 +1,16 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
-
 # db/seeds.rb
 puts "Clearing old data..."
+Profile.destroy_all
 Role.destroy_all
 User.destroy_all
-Profile.destroy_all
 
-# Helper to create users with profiles and roles
 def create_user_with_profile(email:, role:, first_name:, last_name:, phone:, address:, emergency_contact_name:, emergency_contact_phone:, tenant_settings: {})
   user = User.create!(
     email: email,
     password: "password123",
     password_confirmation: "password123"
   )
-  user.add_role(role)
+  user.set_role!(role)  # <-- single-role setter
 
   user.create_profile!(
     first_name: first_name,
@@ -58,7 +46,7 @@ owner = create_user_with_profile(
   phone: "555-333-3333",
   address: "200 Owner Blvd, Melk City",
   emergency_contact_name: "George Brown",
-  emergency_contact_phone: "555-444-4444",
+  emergency_contact_phone: "555-444-4444"
 )
 
 t1 = create_user_with_profile(

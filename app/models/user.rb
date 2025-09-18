@@ -10,13 +10,25 @@ class User < ApplicationRecord
          :jwt_authenticatable,
          jwt_revocation_strategy: self
 
-  after_create :assign_default_role
-
   has_one :profile, dependent: :destroy
   accepts_nested_attributes_for :profile
 
+  after_create :assign_default_role
+
+  def set_role!(new_role)
+    transaction do
+      roles.clear
+      add_role(new_role)
+    end
+  end
+
+  def role_name
+    roles.first&.name
+  end
+
   private
+
   def assign_default_role
-    self.add_role(:tenant) if self.roles.blank?
+    set_role!(:tenant) if roles.blank?
   end
 end
