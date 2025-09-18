@@ -11,21 +11,31 @@
 Devise.setup do |config|
   config.jwt do |jwt|
     jwt.secret = Rails.application.credentials.devise_jwt_secret_key || ENV["DEVISE_JWT_SECRET_KEY"]
+    jwt.algorithm = "HS256"
+
+    # Dispatch token on sign in (adjust as needed)
     jwt.dispatch_requests = [
       [ "POST", %r{^/api/v1/login$} ]
     ]
+
+    # Revoke token on sign out (adjust as needed)
     jwt.revocation_requests = [
       [ "DELETE", %r{^/api/v1/logout$} ]
     ]
+
+    # jwt.dispatch_requests = [
+    #   [ "POST", %r{^/api/v1/login$} ]
+    # ]
+    # jwt.revocation_requests = [
+    #   [ "DELETE", %r{^/api/v1/logout$} ]
+    # ]
+
     jwt.expiration_time = 1.day.to_i
   end
 
-  Warden::JWTAuth.configure do |warden_config|
-    warden_config.secret = Rails.application.credentials.devise_jwt_secret_key || ENV["DEVISE_JWT_SECRET_KEY"]
-  end
-
-  config.skip_session_storage = [ :http_auth, :params_auth, :token_auth ]
-
+  # Warden::JWTAuth.configure do |warden_config|
+  #   warden_config.secret = Rails.application.credentials.devise_jwt_secret_key || ENV["DEVISE_JWT_SECRET_KEY"]
+  # end
 
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
@@ -282,6 +292,9 @@ Devise.setup do |config|
   #
   # The "*/*" below is required to match Internet Explorer requests.
   # config.navigational_formats = ['*/*', :html, :turbo_stream]
+
+  # TODO
+  config.navigational_formats = []
 
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
