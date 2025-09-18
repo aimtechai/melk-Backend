@@ -81,8 +81,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: <%= ENV['DATABASE_URL'] %>
-    username: melk_backend
+    url: <%= ENV['DATABASE_URL'] %>
     password: <%= ENV["MELK_BACKEND_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
