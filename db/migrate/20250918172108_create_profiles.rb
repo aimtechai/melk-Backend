@@ -1,0 +1,18 @@
+class CreateProfiles < ActiveRecord::Migration[8.0]
+  def change
+    create_table :profiles do |t|
+      t.references :user, null: false, foreign_key: true
+      t.string :first_name
+      t.string :last_name
+      t.string :phone
+      t.text :address
+      t.string :emergency_contact_name
+      t.string :emergency_contact_phone
+      t.jsonb :tenant_settings, default: {}, null: false
+
+      t.timestamps
+    end
+
+    add_index :profiles, :tenant_settings, using: :gin
+  end
+end
