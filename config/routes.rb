@@ -21,24 +21,24 @@ Rails.application.routes.draw do
       end
     end
   end
-
-  # Defines the root path route ("/")
-  # root "posts#index"
-
-  # namespace :api, defaults: { format: :json } do
-  #   namespace :v1 do
-  #     devise_for :users, controllers: {
-  #       sessions: "api/v1/sessions",
-  #       registrations: "api/v1/registrations",
-  #       passwords: "api/v1/passwords"
-  #     }
-
-  #     devise_scope :user do
-  #       get "users/current", to: "sessions#current_user_info"
-  #       post "passwords/send_otp", to: "passwords#send_otp"
-  #       post "passwords/verify_otp", to: "passwords#verify_otp"
-  #       put "passwords/reset", to: "passwords#reset"
-  #     end
-  #   end
-  # end
 end
+
+# Defines the root path route ("/")
+# root "posts#index"
+
+# namespace :api, defaults: { format: :json } do
+#   namespace :v1 do
+#     devise_for :users, controllers: {
+#       sessions: "api/v1/sessions",
+#       registrations: "api/v1/registrations",
+#       passwords: "api/v1/passwords"
+#     }
+
+#     devise_scope :user do
+#       get "users/current", to: "sessions#current_user_info"
+#       post "passwords/send_otp", to: "passwords#send_otp"
+#       post "passwords/verify_otp", to: "passwords#verify_otp"
+#       put "passwords/reset", to: "passwords#reset"
+#     end
+#   end
+# end

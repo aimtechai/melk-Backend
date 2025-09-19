@@ -4,6 +4,11 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  def sign_up(resource_name, resource)
+    # Override Devise's default: do NOT auto-login after signup
+    true
+  end
+
   private
 
   def configure_permitted_parameters

@@ -10,7 +10,7 @@ def create_user_with_profile(email:, role:, first_name:, last_name:, phone:, add
     password: "password123",
     password_confirmation: "password123"
   )
-  user.set_role!(role)  # <-- single-role setter
+  user.set_role!(role)
 
   user.create_profile!(
     first_name: first_name,
@@ -78,10 +78,10 @@ puts "\nSeeded Users:"
   puts "#{u.email} (#{u.roles.pluck(:name).join(', ')}) -> Profile: #{u.profile.first_name} #{u.profile.last_name}"
 end
 
-tenant = User.find_by(email: "tenant1@melk.pm")
-tenant.maintenance_requests.create!(
-  title: "Broken Sink",
-  description: "The kitchen sink is leaking heavily.",
-  location: "Kitchen",
-  allow_entry: true
-)
+# tenant = User.find_by(email: "tenant1@melk.pm")
+# tenant.maintenance_requests.create!(
+#   title: "Broken Sink",
+#   description: "The kitchen sink is leaking heavily.",
+#   location: "Kitchen",
+#   allow_entry: true
+# )
