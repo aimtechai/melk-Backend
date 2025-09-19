@@ -19,7 +19,11 @@ class Api::V1::MaintenanceRequestsController < Api::V1::BaseController
     if request.save
       render_serialized(request, :create, :created)
     else
-      render_errors(request)
+      render_error(
+        message: "Failed to create maintenance request",
+        status: :unprocessable_entity,
+        details: request.errors.full_messages
+      )
     end
   end
 
@@ -28,16 +32,24 @@ class Api::V1::MaintenanceRequestsController < Api::V1::BaseController
     if @maintenance_request.update(maintenance_request_params)
       render_serialized(@maintenance_request, :update, :ok)
     else
-      render_errors(@maintenance_request)
+      render_error(
+        message: "Failed to update maintenance request",
+        status: :unprocessable_entity,
+        details: @maintenance_request.errors.full_messages
+      )
     end
   end
 
   # DELETE /api/v1/maintenance_requests/:id
   def destroy
     if @maintenance_request.destroy
-      render json: { message: "Maintenance request deleted successfully." }, status: :ok
+      render json: { message: "Maintenance request deleted successfully" }, status: :ok
     else
-      render_errors(@maintenance_request)
+      render_error(
+        message: "Failed to delete maintenance request",
+        status: :unprocessable_entity,
+        details: @maintenance_request.errors.full_messages
+      )
     end
   end
 
@@ -46,7 +58,11 @@ class Api::V1::MaintenanceRequestsController < Api::V1::BaseController
     if @maintenance_request.update(status: params[:status])
       render_serialized(@maintenance_request, :update_status, :ok)
     else
-      render_errors(@maintenance_request)
+      render_error(
+        message: "Failed to update status",
+        status: :unprocessable_entity,
+        details: @maintenance_request.errors.full_messages
+      )
     end
   end
 
@@ -58,22 +74,17 @@ class Api::V1::MaintenanceRequestsController < Api::V1::BaseController
 
   def maintenance_request_params
     params.require(:maintenance_request).permit(
-      :title, :description, :location, :allow_entry, :status,
-      :assigned_to_id,
+      :title, :description, :location, :allow_entry, :status, :assigned_to_id,
       attachments: []
     )
   end
 
-  # 🔹 Shared serializer renderer
+  # Shared rendering for serialized responses
   def render_serialized(resource, action, status)
     render json: MaintenanceRequestSerializer.new(
       resource,
       params: { action:, host: request.base_url }
-    ).serializable_hash, status:
-  end
-
-  # 🔹 Shared error renderer
-  def render_errors(resource)
-    render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
+    ).serializable_hash,
+           status:
   end
 end
