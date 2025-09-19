@@ -2,74 +2,51 @@ class Api::V1::MaintenanceRequestsController < Api::V1::BaseController
   before_action :authenticate_user!
   before_action :set_maintenance_request, only: %i[show update destroy update_status]
 
+  # GET /api/v1/maintenance_requests
   def index
-    @maintenance_requests = if current_user.has_role?(:tenant)
-                              current_user.maintenance_requests
-    else
-                              MaintenanceRequest.all
-    end
-
-    serialized_requests = MaintenanceRequestSerializer.new(
-      @maintenance_requests,
-      params: { action: :index, host: request.base_url }
-    ).serializable_hash
-
-    render json: serialized_requests, status: :ok
+    requests = current_user.has_role?(:tenant) ? current_user.maintenance_requests : MaintenanceRequest.all
+    render_serialized(requests, :index, :ok)
   end
 
+  # GET /api/v1/maintenance_requests/:id
   def show
-    serialized_request = MaintenanceRequestSerializer.new(
-      @maintenance_request,
-      params: { action: :show, host: request.base_url }
-    ).serializable_hash
-
-    render json: serialized_request, status: :ok
+    render_serialized(@maintenance_request, :show, :ok)
   end
 
+  # POST /api/v1/maintenance_requests
   def create
-    @maintenance_request = current_user.maintenance_requests.new(maintenance_request_params)
-
-    if @maintenance_request.save
-      serialized_request = MaintenanceRequestSerializer.new(
-        @maintenance_request,
-        params: { action: :create, host: request.base_url }
-      ).serializable_hash
-      render json: serialized_request, status: :created
+    request = current_user.maintenance_requests.new(maintenance_request_params)
+    if request.save
+      render_serialized(request, :create, :created)
     else
-      render json: { errors: @maintenance_request.errors.full_messages }, status: :unprocessable_entity
+      render_errors(request)
     end
   end
 
+  # PATCH/PUT /api/v1/maintenance_requests/:id
   def update
     if @maintenance_request.update(maintenance_request_params)
-      serialized_request = MaintenanceRequestSerializer.new(
-        @maintenance_request,
-        params: { action: :update, host: request.base_url }
-      ).serializable_hash
-      render json: serialized_request, status: :ok
+      render_serialized(@maintenance_request, :update, :ok)
     else
-      render json: { errors: @maintenance_request.errors.full_messages }, status: :unprocessable_entity
+      render_errors(@maintenance_request)
     end
   end
 
+  # DELETE /api/v1/maintenance_requests/:id
   def destroy
     if @maintenance_request.destroy
       render json: { message: "Maintenance request deleted successfully." }, status: :ok
     else
-      render json: { errors: @maintenance_request.errors.full_messages }, status: :unprocessable_entity
+      render_errors(@maintenance_request)
     end
   end
 
+  # PATCH /api/v1/maintenance_requests/:id/update_status
   def update_status
     if @maintenance_request.update(status: params[:status])
-
-      serialized_request = MaintenanceRequestSerializer.new(
-        @maintenance_request,
-        params: { action: :update_status, host: request.base_url }
-      ).serializable_hash
-      render json: serialized_request, status: :ok
+      render_serialized(@maintenance_request, :update_status, :ok)
     else
-      render json: { errors: @maintenance_request.errors.full_messages }, status: :unprocessable_entity
+      render_errors(@maintenance_request)
     end
   end
 
@@ -85,5 +62,18 @@ class Api::V1::MaintenanceRequestsController < Api::V1::BaseController
       :assigned_to_id,
       attachments: []
     )
+  end
+
+  # 🔹 Shared serializer renderer
+  def render_serialized(resource, action, status)
+    render json: MaintenanceRequestSerializer.new(
+      resource,
+      params: { action:, host: request.base_url }
+    ).serializable_hash, status:
+  end
+
+  # 🔹 Shared error renderer
+  def render_errors(resource)
+    render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
   end
 end
