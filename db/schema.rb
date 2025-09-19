@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_18_192110) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_19_202414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,6 +56,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_18_192110) do
     t.index ["request_code"], name: "index_maintenance_requests_on_request_code", unique: true
     t.index ["status"], name: "index_maintenance_requests_on_status"
     t.index ["user_id"], name: "index_maintenance_requests_on_user_id"
+  end
+
+  create_table "move_ins", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.jsonb "checklist", default: {"set_up_utilities"=>false, "collect_property_keys"=>false, "review_property_rules"=>false, "submit_move_in_inspection_form"=>false}, null: false
+    t.datetime "checklist_completed_at"
+    t.date "preferred_date"
+    t.string "preferred_time"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["checklist"], name: "index_move_ins_on_checklist", using: :gin
+    t.index ["user_id"], name: "index_move_ins_on_user_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -109,5 +122,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_18_192110) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "maintenance_requests", "users"
   add_foreign_key "maintenance_requests", "users", column: "assigned_to_user_id"
+  add_foreign_key "move_ins", "users"
   add_foreign_key "profiles", "users"
 end

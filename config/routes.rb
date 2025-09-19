@@ -19,6 +19,15 @@ Rails.application.routes.draw do
           patch :update_status
         end
       end
+      resources :move_ins do
+        member do
+          patch :update_checklist   # Step 1
+          patch :schedule           # Step 2 (requires checklist complete)
+          post  :attachments        # Step 3 (add files)
+          delete "attachments/:attachment_id", to: "move_ins#destroy_attachment"
+          patch :update_status      # (manager action)
+        end
+      end
     end
   end
 end

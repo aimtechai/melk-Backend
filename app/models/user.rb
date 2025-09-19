@@ -12,6 +12,7 @@ class User < ApplicationRecord
 
   has_one :profile, dependent: :destroy
   has_many :maintenance_requests, dependent: :destroy
+  has_many :move_ins, dependent: :destroy
 
   accepts_nested_attributes_for :profile
 
