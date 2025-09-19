@@ -7,10 +7,11 @@ class Api::V1::BaseController < ApplicationController
   protect_from_forgery with: :null_session
   before_action :authenticate_user!
 
-  # skip_before_action :verify_authenticity_token
-
   rescue_from Pundit::NotAuthorizedError do
-    render json: { error: "Forbidden" }, status: :forbidden
+    render_error(
+      message: "Forbidden",
+      status: :forbidden
+    )
   end
 
   # Prevent Rails from falling back to cookies/sessions for auth

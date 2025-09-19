@@ -1,5 +1,4 @@
 class Api::V1::MaintenanceRequestsController < Api::V1::BaseController
-  before_action :authenticate_user!
   before_action :set_maintenance_request, only: %i[show update destroy update_status]
 
   # GET /api/v1/maintenance_requests
@@ -79,12 +78,11 @@ class Api::V1::MaintenanceRequestsController < Api::V1::BaseController
     )
   end
 
-  # Shared rendering for serialized responses
   def render_serialized(resource, action, status)
     render json: MaintenanceRequestSerializer.new(
       resource,
       params: { action:, host: request.base_url }
     ).serializable_hash,
-           status:
+           status: status
   end
 end

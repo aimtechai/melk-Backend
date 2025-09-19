@@ -11,25 +11,30 @@ module ErrorHandler
 
   private
 
-  # Not found errors
   def handle_not_found(error)
-    render json: { message: "#{error.model} not found" }, status: :not_found
+    render_error(
+      message: "#{error.model} not found",
+      status: :not_found
+    )
   end
 
-  # Missing or invalid params
   def handle_bad_request(error)
-    render json: { message: "Bad request", details: error.message }, status: :bad_request
+    render_error(
+      message: "Bad request",
+      status: :bad_request,
+      details: error.message
+    )
   end
 
-  # Validation failures
   def handle_unprocessable_entity(error)
-    render json: {
+    render_error(
       message: "Validation failed",
+      status: :unprocessable_entity,
       details: error.record.errors.full_messages
-    }, status: :unprocessable_entity
+    )
   end
 
-  # Manual helper for controller actions
+  # 🔹 Helper for manual error rendering in controllers
   def render_error(message:, status:, details: nil)
     payload = { message: message }
     payload[:details] = details if details.present?
